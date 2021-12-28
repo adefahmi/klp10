@@ -10,7 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PemesanankuController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\RoomController;
-
+use App\Http\Controllers\TipeKamarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,8 +37,9 @@ Route::prefix('/booking')->group(function() {
     Route::get('/pesan/{kamar_id}', [PemesanankuController::class, 'pesan'])->name('booking-kamar')->middleware('auth');
     Route::post('/pesan/simpan', [PemesanankuController::class, 'simpanpesan'])->name('booking-simpanpesan')->middleware('auth');
     Route::post('/pesan/bayar', [PemesanankuController::class, 'bayar'])->name('booking-bayar')->middleware('auth');
-    
+
     Route::group(['middleware' =>'admin'], function(){
+        Route::resource('/tipekamar', TipeKamarController::class);
         Route::get('/room', [RoomController::class, 'room'])->name('booking-hotel');
         Route::get('/addroom', [RoomController::class, 'addnewroom'])->name('addnewroom');
         Route::post('/saveroom',[RoomController::class,'savenewroom'])->name('savenewroom');
@@ -46,7 +47,7 @@ Route::prefix('/booking')->group(function() {
         Route::get('/editroom/{id}',[RoomController::class,'editroom'])->name('editroom');
         Route::post('/saveeditroom/{id}',[RoomController::class,'saveeditroom'])->name('saveeditroom');
         Route::get('/deleteroom/{id}',[RoomController::class,'deleteroom'])->name('deleteroom');
-        
+
         Route::get('/admin', [AdminController::class, 'index'])->name('admin-dashboard');
         Route::get('/verif/gagal/{booking_id}', [AdminController::class, 'gagal'])->name('admin-gagal');
         Route::get('/verif/selesai/{booking_id}', [AdminController::class, 'selesai'])->name('admin-selesai');
