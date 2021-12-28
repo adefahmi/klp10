@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemadesigner version="6.5">
+<source>
+<database charset="utf8mb4" collation="utf8mb4_general_ci">db_booking</database>
+</source>
+<canvas zoom="100">
+<tables>
+<table name="booking_details" view="colnames">
+<left>21</left>
+<top>216</top>
+<width>126</width>
+<height>248</height>
+<sql_create_table>CREATE TABLE `booking_details` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `booking_id` bigint(20) unsigned NOT NULL,
+  `tanggal_mulai` date NOT NULL,
+  `tanggal_akhir` date NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `kamar_id` bigint(20) unsigned NOT NULL,
+  `status` enum('Belum Terbayar','Terbayar','Verifikasi','Verifikasi Ditolak','Gagal','Selesai') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bukti_transfer` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `booking_id` (`booking_id`),
+  KEY `kamar_id` (`kamar_id`),
+  CONSTRAINT `booking_details_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`),
+  CONSTRAINT `booking_details_ibfk_2` FOREIGN KEY (`kamar_id`) REFERENCES `kamars` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci</sql_create_table>
+</table>
+<table name="bookings" view="colnames">
+<left>216</left>
+<top>22</top>
+<width>140</width>
+<height>214</height>
+<sql_create_table>CREATE TABLE `bookings` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `kode_booking` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tamu_id` bigint(20) unsigned NOT NULL,
+  `tanggal_booking` date NOT NULL,
+  `total_transaksi` double NOT NULL,
+  `total_berbayar` double DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tamu_id` (`tamu_id`),
+  CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`tamu_id`) REFERENCES `tamus` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci</sql_create_table>
+</table>
+<table name="tamus" view="colnames">
+<left>452</left>
+<top>77</top>
+<width>142</width>
+<height>299</height>
+<sql_create_table>CREATE TABLE `tamus` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `pengenal` enum('KTP','Paspor') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nomor_pengenal` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nama` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `alamat` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `telepon` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `repassword` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `admin` int(11) NOT NULL DEFAULT 0,
+  `is_delete` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci</sql_create_table>
+</table>
+<table name="kamars" view="colnames">
+<left>213</left>
+<top>372</top>
+<width>144</width>
+<height>231</height>
+<sql_create_table>CREATE TABLE `kamars` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `tipe` enum('Standar','Suite','Deluxe') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `harga` double NOT NULL,
+  `stok_tersedia` int(11) NOT NULL,
+  `fasilitas` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `kapasitas_kamar` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci</sql_create_table>
+</table>
+</tables>
+</canvas>
+</schemadesigner>
