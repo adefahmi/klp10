@@ -12,13 +12,15 @@
                         Halo, {{ auth()->user()->nama }}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{{ route('profile-profile') }}"><i class="bi bi-person"></i>
-                                Akun</a></li>
-                        <li><a class="dropdown-item" href="/booking/pemesananku"><i class="bi bi-bell"></i>
-                                Pemesananku</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                        @if (auth()->user()->admin != 1)
+                            <li><a class="dropdown-item" href="{{ route('profile-profile') }}"><i class="bi bi-person"></i>
+                                    Akun</a></li>
+                            <li><a class="dropdown-item" href="/booking/pemesananku"><i class="bi bi-bell"></i>
+                                    Pemesananku</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                        @endif
                         <li>
                             <a href="{{ route('booking-logout') }}" class="dropdown-item"><i
                                     class="bi bi-box-arrow-right"
@@ -46,10 +48,10 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link @if ($judul == 'Home') active @endif" aria-current="page"
-                        href="{{ route('booking-home') }}">Home</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if ($judul == 'Home') active @endif" aria-current="page"
+                            href="{{ route('booking-home') }}">Home</a>
+                    </li>
                 @auth
                     @if (auth()->user()->admin === 1)
                         <li class="nav-item">
@@ -59,33 +61,38 @@
                     @endif
                 @endauth
 
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('booking-listkamar') ? 'active' : '' }}"" href="{{ route('booking-listkamar') }}">List Kamar</a>
-                </li>
-
-                @if (auth()->user()->admin === 1)
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
-                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Master Data
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('tipekamar.index') }}">Tipe Kamar</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('room.index') }}">Kamar</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">Laporan</a>
-                            </li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('booking-listkamar') ? 'active' : '' }}"" href="{{ route('booking-listkamar') }}">List Kamar</a>
                     </li>
-                @endif
 
-                <li class="nav-item">
-                    <a class="nav-link @if ($judul == 'About') active @endif" href="{{ route('booking-about') }}">Tentang Kami</a>
-                </li>
+                    @auth
+                        @if (auth()->user()->admin === 1)
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Master Data
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('tipekamar.index') }}">Tipe Kamar</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('room.index') }}">Kamar</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('laporan.index') }}">Laporan</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
+
+                    @endauth
+
+                {{-- @if (auth()->user()->admin != 1) --}}
+                    <li class="nav-item">
+                        <a class="nav-link @if ($judul == 'About') active @endif" href="{{ route('booking-about') }}">Tentang Kami</a>
+                    </li>
+                {{-- @endif --}}
             </ul>
         </div>
     </ul>
