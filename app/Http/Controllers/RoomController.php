@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Kamar;
 use App\Models\Tamu;
+use App\Models\TipeKamar;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 use Auth;
@@ -16,66 +17,64 @@ class RoomController extends Controller
         $judul = "List Kamar";
         $kamars = Kamar::orderBy('id','desc')->get();
 
-        return view('room.index', compact('judul', 'kamars', 'admin')); 
+        return view('room.index', compact('judul', 'kamars', 'admin'));
 
     }
 
     public function addnewroom() {
         $judul = "Tambah Kamar";
         $kamars = Kamar::orderBy('id','asc')->get();
-        $formdata = [
-            'tipe' => ['select', "Room Type", ['Standar', 'Suite', 'Deluxe']],
-            'harga'=> ['text', "Room Price"],
-            'stok_tersedia'=> ['text', "Room Availability"],
-            'fasilitas'=> ['text', "Room Facility"],
-            'image'=> ['file', "Room Image"],
-            'kapasitas_kamar'=> ['text', "Room Capacity"],
-        ];
-        return view ('room.add', compact('judul', 'kamars', 'formdata'));
+        $tipekamars = TipeKamar::get()->pluck('nama', 'id');
+        return view ('room.create', compact('judul', 'kamars', 'tipekamars'));
     }
 
     public function savenewroom (Request $request) {
         $judul = "Simpan Kamar";
         $kamars = Kamar::orderBy('id','asc')->get();
-        $rules = [
-            'tipe'=>'required',
-            'harga'=>'required|integer|max:50',
+
+        $request->validate([
+            'nama'=>'required',
+            'tipe_kamar_id'=>'required',
+            'harga'=>'required|integer',
             'stok_tersedia'=>'required|integer|max:50',
             'fasilitas'=>'required|max:100',
             'image'=>'required|image|mimes:jpeg,png,jpg,gif,svg|max:600',
             'kapasitas_kamar'=>'required|max:50',
-        ];
- 
-        $messages = [
-            'tipe.required' => 'Name is required.',
-            'harga.required' => 'Price is required.',
-            'stok_tersedia.required' => 'Availability is required.',
-            'fasilitas.required' => 'Facility is required.',
-            'image.required' => 'Image is required.',
-            'kapasitas_kamar.required'=>'Capacity is required',
-        ];
+        ]);
+        // $rules = [
+        //     'tipe'=>'required',
+        //     'harga'=>'required|integer|max:50',
+        //     'stok_tersedia'=>'required|integer|max:50',
+        //     'fasilitas'=>'required|max:100',
+        //     'image'=>'required|image|mimes:jpeg,png,jpg,gif,svg|max:600',
+        //     'kapasitas_kamar'=>'required|max:50',
+        // ];
 
-        $validator = Validator::make($request->all(), $rules, $messages);
-         
-        if($validator->fails()){
-            return redirect()->back()->withErrors($validator)->withInput($request->all());
-        }
-        
-        $imageName = time().'.'.$request->image->extension();  
-     
+        // $messages = [
+        //     'tipe.required' => 'Name is required.',
+        //     'harga.required' => 'Price is required.',
+        //     'stok_tersedia.required' => 'Availability is required.',
+        //     'fasilitas.required' => 'Facility is required.',
+        //     'image.required' => 'Image is required.',
+        //     'kapasitas_kamar.required'=>'Capacity is required',
+        // ];
+
+        // $validator = Validator::make($request->all(), $rules, $messages);
+
+        // if($validator->fails()){
+        //     return redirect()->back()->withErrors($validator)->withInput($request->all());
+        // }
+
+        $imageName = time().'.'.$request->image->extension();
+
         $request->image->move(public_path('images'), $imageName);
 
-        $kamars = new Kamar;
-        $kamars->tipe = $request->tipe;
-        $kamars->harga = $request->harga;
-        $kamars->stok_tersedia = $request->stok_tersedia;
-        $kamars->fasilitas = $request->fasilitas;
-        $kamars->image = $imageName;
-        $kamars->kapasitas_kamar = $request->kapasitas_kamar;
-        
-        $kamars->save();
+        $data = $request->except('image');
+        $data['image'] = $imageName;
 
-        return redirect(route('booking-hotel'))->with([
+        Kamar::create($data);
+
+        return redirect(route('room.index'))->with([
             'successful_message' => 'New room has been added successfully!',
         ], compact('judul', 'kamars'));
     }
@@ -84,39 +83,41 @@ class RoomController extends Controller
         $judul = "Detail Kamar";
         $kamar = Kamar::find($id);
         $kamars = Kamar::orderBy('id','asc')->get();
-        return view('room.detail', compact('judul','kamar', 'kamars')); 
+        return view('room.detail', compact('judul','kamar', 'kamars'));
     }
 
     public function editroom ($id) {
         $judul = "Edit Kamar";
         $kamar = Kamar::find($id);
         $kamars = Kamar::orderBy('id','asc')->get();
-        $formdata = [
-            'tipe' => ['select', "Room Type", ['Standar', 'Suite', 'Deluxe']],
-        ];
-        return view('room.edit', compact('judul','kamar', 'kamars', 'formdata')); 
+        $tipekamars = TipeKamar::get()->pluck('nama', 'id');
+
+        return view('room.edit', compact('judul','kamar', 'kamars', 'tipekamars'));
     }
 
-    public function saveeditroom (Request $request, $id) {
+    public function saveeditroom (Request $request, Kamar $kamar) {
         $judul = "Simpan Edit Kamar";
 
-        $kamars = Kamar::find($id);
-        $kamars->tipe = $request->tipe;
-        $kamars->harga = $request->harga;
-        $kamars->stok_tersedia = $request->stok_tersedia;
-        $kamars->fasilitas = $request->fasilitas;
-        $kamars->kapasitas_kamar = $request->kapasitas_kamar;
+        $request->validate([
+            'nama'=>'required',
+            'tipe_kamar_id'=>'required',
+            'harga'=>'required|integer',
+            'stok_tersedia'=>'required|integer|max:50',
+            'fasilitas'=>'required|max:100',
+            'image'=>'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:600',
+            'kapasitas_kamar'=>'required|max:50',
+        ]);
+
+        $data = $request->except('image');
 
         // dd($kamars);
         //mengecek image, apakah user memasukan image yang baru
         //jika image baru tidak dimasukkan, gunakan image lama yang disimpan di hidden field
-        if($request->image=='') {
-            $kamars->image = $request->imageHide;
-        } else {
+        if($request->has('image')) {
             //jika user memasukan image baru, proses image ini dan simpan di folder server
-            $imageName = time().'.'.$request->image->extension();  
+            $imageName = time().'.'.$request->image->extension();
             $request->image->move(public_path('images'), $imageName);
-            $kamars->image = $imageName;
+            $data['image'] = $imageName;
 
             //hapus image lama dari server karena  user telah memasukan image yang baru
             if(File::exists(public_path('images/'.$request->imageHide))){
@@ -124,9 +125,9 @@ class RoomController extends Controller
             }
         }
 
-        $kamars->save();
+        $kamar->update($data);
 
-        return redirect(route('admin-dashboard'))->with([
+        return redirect(route('room.index'))->with([
             'successful_message' => 'Room has been edited successfully!',
         ], compact('judul'));
 
@@ -146,7 +147,7 @@ class RoomController extends Controller
         //hapus data di database
         $kamars->delete();
 
-        return redirect(route('booking-hotel'))->with([
+        return redirect(route('room.index'))->with([
             'successful_message' => 'Room has been removed successfully!',
         ]);
     }

@@ -40,12 +40,12 @@ Route::prefix('/booking')->group(function() {
 
     Route::group(['middleware' =>'admin'], function(){
         Route::resource('/tipekamar', TipeKamarController::class);
-        Route::get('/room', [RoomController::class, 'room'])->name('booking-hotel');
+        Route::get('/room', [RoomController::class, 'room'])->name('room.index');
         Route::get('/addroom', [RoomController::class, 'addnewroom'])->name('addnewroom');
         Route::post('/saveroom',[RoomController::class,'savenewroom'])->name('savenewroom');
         Route::get('/detailroom/{id}',[RoomController::class,'detailroom'])->name('detailroom');
         Route::get('/editroom/{id}',[RoomController::class,'editroom'])->name('editroom');
-        Route::post('/saveeditroom/{id}',[RoomController::class,'saveeditroom'])->name('saveeditroom');
+        Route::patch('/saveeditroom/{kamar}',[RoomController::class,'saveeditroom'])->name('saveeditroom');
         Route::get('/deleteroom/{id}',[RoomController::class,'deleteroom'])->name('deleteroom');
 
         Route::get('/admin', [AdminController::class, 'index'])->name('admin-dashboard');
