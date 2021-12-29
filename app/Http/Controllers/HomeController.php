@@ -10,21 +10,21 @@ class HomeController extends Controller
     public function index() {
         $judul = "Home";
         $kamars = Kamar::orderBy('id','asc')->get();
-        
+
         return view('home', compact('judul', 'kamars'));
-    }    
-    
+    }
+
     public function listkamar() {
         $judul = "List Kamar";
-        $kamars = Kamar::orderBy('id','asc')->get();
-        
+        $kamars = Kamar::orderBy('id','asc')->orderBy('tipe_kamar_id')->paginate(3);
+
         return view('listkamar', compact('judul', 'kamars'));
     }
 
     public function about() {
         $judul = "About";
         $kamars = Kamar::orderBy('id','asc')->get();
-        
+
         return view('about', compact('judul', 'kamars'));
     }
 }
