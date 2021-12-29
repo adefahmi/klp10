@@ -33,6 +33,11 @@
             </div>
         @endforeach
     </div>
+    <div class="row mt-5">
+        <div class="d-flex justify-content-center">
+            {!! $kamars->links() !!}
+        </div>
+    </div>
 
     <br>
     <br>

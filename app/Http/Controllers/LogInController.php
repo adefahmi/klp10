@@ -23,7 +23,7 @@ class LogInController extends Controller
         if(Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/booking/home');
+            return redirect()->intended('/booking/admin');
         }
         return back()->with('fail', 'Login Failed!');
     }
