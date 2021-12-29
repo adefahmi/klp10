@@ -15,7 +15,7 @@ class RoomController extends Controller
     public function room() {
         $admin = Tamu::all();
         $judul = "List Kamar";
-        $kamars = Kamar::orderBy('id','desc')->get();
+        $kamars = Kamar::orderBy('id','desc')->paginate(3);
 
         return view('room.index', compact('judul', 'kamars', 'admin'));
 
@@ -41,29 +41,6 @@ class RoomController extends Controller
             'image'=>'required|image|mimes:jpeg,png,jpg,gif,svg|max:600',
             'kapasitas_kamar'=>'required|max:50',
         ]);
-        // $rules = [
-        //     'tipe'=>'required',
-        //     'harga'=>'required|integer|max:50',
-        //     'stok_tersedia'=>'required|integer|max:50',
-        //     'fasilitas'=>'required|max:100',
-        //     'image'=>'required|image|mimes:jpeg,png,jpg,gif,svg|max:600',
-        //     'kapasitas_kamar'=>'required|max:50',
-        // ];
-
-        // $messages = [
-        //     'tipe.required' => 'Name is required.',
-        //     'harga.required' => 'Price is required.',
-        //     'stok_tersedia.required' => 'Availability is required.',
-        //     'fasilitas.required' => 'Facility is required.',
-        //     'image.required' => 'Image is required.',
-        //     'kapasitas_kamar.required'=>'Capacity is required',
-        // ];
-
-        // $validator = Validator::make($request->all(), $rules, $messages);
-
-        // if($validator->fails()){
-        //     return redirect()->back()->withErrors($validator)->withInput($request->all());
-        // }
 
         $imageName = time().'.'.$request->image->extension();
 

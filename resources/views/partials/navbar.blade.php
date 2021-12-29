@@ -59,18 +59,8 @@
                     @endif
                 @endauth
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="/booking/listkamar#listkamar" id="navbarDropdown"
-                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        List Kamar
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        @foreach ($kamars as $kamar)
-                            <li><a class="dropdown-item" href="/booking/listkamar#{{ $kamar->tipe }}"><img
-                                        src="https://img.icons8.com/ios/26/000000/bed.png" /> {{ $kamar->tipe }}</a>
-                            </li>
-                        @endforeach
-                    </ul>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('booking-listkamar') ? 'active' : '' }}"" href="{{ route('booking-listkamar') }}">List Kamar</a>
                 </li>
 
                 @if (auth()->user()->admin === 1)
