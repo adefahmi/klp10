@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SignUpController;
 use App\Http\Controllers\LogInController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PemesanankuController;
 use App\Http\Controllers\PasswordController;
@@ -53,6 +54,7 @@ Route::prefix('/booking')->group(function() {
         Route::get('/verif/selesai/{booking_id}', [AdminController::class, 'selesai'])->name('admin-selesai');
         Route::post('/verif/terima', [AdminController::class, 'verifTerima'])->name('admin-verifikasi');
         Route::post('/verif/tolak', [AdminController::class, 'verifTolak'])->name('admin-tolakverifikasi');
+        Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     });
 });
 
